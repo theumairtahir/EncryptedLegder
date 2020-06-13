@@ -1,20 +1,23 @@
-﻿using EncryptedLegder.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using EncryptedLegder.Abstractions;
+using EncryptedLegder.Models;
 
 namespace EncryptedLegder.Processes
 {
-    internal class LedgerVerification
+    internal class LedgerVerification<TransactioneeId> :ILedgerVerification<TransactioneeId>
     {
-        private readonly string salt;
-        public LedgerVerification(string salt)
+        private readonly IDigitalSigning digitalSigning;
+        private readonly ICryptography cryptography;
+
+        public LedgerVerification(IDigitalSigning digitalSigning, ICryptography cryptography)
         {
-            this.salt = salt;
+            this.digitalSigning = digitalSigning;
+            this.cryptography = cryptography;
         }
         public bool VerifyEntry(EncryptedLedgerEntry encryptedLedgerEntry)
         {
-
+            var decrypted = cryptography.Decrypt<TransactioneeId>(encryptedLedgerEntry);
+            var result = digitalSigning.VerifySignature(decrypted, encryptedLedgerEntry.Signature);
+            return result;
         }
     }
 }

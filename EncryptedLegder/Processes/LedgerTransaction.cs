@@ -1,27 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using EncryptedLegder.Abstractions;
+﻿using EncryptedLegder.Abstractions;
 using EncryptedLegder.Models;
 using EncryptedLegder.Models.InternalModels;
+using System;
+using System.Collections.Generic;
 
 namespace EncryptedLegder.Processes
 {
     internal class LedgerTransaction<TransactioneeIdType> : ILedgerTransaction<TransactioneeIdType>
     {
-        private readonly List<EncryptedLedgerEntry> encryptedLedgerEntries;
         private LedgerEntry<TransactioneeIdType> person1Entry, person2Entery;
-        private readonly string salt;
+        private readonly ICryptography cryptography;
         private decimal transactionAmount;
         private string description, comments;
         private PersonWithBalance<TransactioneeIdType> person1, person2;
         private DateTime transactionDate;
         private List<string> tags;
-        public LedgerTransaction(ISaltValue salt)
+        public LedgerTransaction(ICryptography cryptography)
         {
-            this.salt = salt.GetSaltValue();
-            encryptedLedgerEntries = new List<EncryptedLedgerEntry>();
             tags = new List<string>(3);
+            this.cryptography = cryptography;
         }
         public ILedgerTransaction<TransactioneeIdType> And(string tag)
         {
@@ -34,7 +31,36 @@ namespace EncryptedLegder.Processes
 
         public List<EncryptedLedgerEntry> Done()
         {
-            throw new NotImplementedException();
+            List<EncryptedLedgerEntry> encrypteds = new List<EncryptedLedgerEntry>(2);
+            person1Entry = new LedgerEntry<TransactioneeIdType>
+            {
+                Comments = comments,
+                Description = description,
+                Tag1 = tags[0],
+                Tag2 = tags[1],
+                Tag3 = tags[2],
+                TransactionDateTime = transactionDate,
+                TransactioneeId = person1.PersonId,
+                Debit = 0,
+                Credit = transactionAmount,
+                Balance = person1.PreviousBalance - transactionAmount
+            };
+            person2Entery = new LedgerEntry<TransactioneeIdType>
+            {
+                Comments = comments,
+                Description = description,
+                Tag1 = tags[0],
+                Tag2 = tags[1],
+                Tag3 = tags[2],
+                TransactionDateTime = transactionDate,
+                TransactioneeId = person2.PersonId,
+                Debit = transactionAmount,
+                Credit = 0,
+                Balance = person1.PreviousBalance + transactionAmount
+            };
+            encrypteds.Add(cryptography.Encrypt(person1Entry));
+            encrypteds.Add(cryptography.Encrypt(person2Entery));
+            return encrypteds;
         }
 
         public ILedgerTransaction<TransactioneeIdType> DoATransactionOf(decimal amount)

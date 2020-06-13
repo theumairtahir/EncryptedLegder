@@ -1,7 +1,6 @@
 ﻿using EncryptedLegder.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace EncryptedLegder.Processes
 {
@@ -15,5 +14,9 @@ namespace EncryptedLegder.Processes
         ILedgerTransaction<PersonIdType> With(string comments);
         ILedgerTransaction<PersonIdType> And(string tag);
         List<EncryptedLedgerEntry> Done();
+    }
+    public interface ILedgerVerification<PersonIdType>
+    {
+        bool VerifyEntry(EncryptedLedgerEntry encryptedLedgerEntry);
     }
 }

@@ -27,6 +27,7 @@ namespace EncryptedLegder.Injections
             builder.RegisterType<EncryptionDecryption>().As<ICryptography>();
             builder.RegisterType<DigitalSigning>().As<IDigitalSigning>();
             builder.RegisterType<LedgerTransaction<TransactioneeIdType>>().As<ILedgerTransaction<TransactioneeIdType>>();
+            builder.RegisterType<LedgerVerification<TransactioneeIdType>>().As<ILedgerVerification<TransactioneeIdType>>();
             return builder.Build();
         }
     }
