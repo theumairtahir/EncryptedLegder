@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EncryptedLegder.Models
 {
@@ -17,10 +15,20 @@ namespace EncryptedLegder.Models
         public string Tag1 { get; set; }
         public string Tag2 { get; set; }
         public string Tag3 { get; set; }
+        public override string ToString()
+        {
+            string s = "";
+            foreach (var prop in GetType().GetProperties())
+            {
+                s += $"{prop.Name}: {prop.GetValue(this)}, ";
+            }
+            s = s.Substring(0, s.Length - 1);
+            return s;
+        }
     }
     public class EncryptedLedgerEntry
     {
-        public string Id { get; set; }
+        public string PrimaryKey { get; set; }
         public string TransactioneeId { get; set; }
         public string Debit { get; set; }
         public string Credit { get; set; }
@@ -32,5 +40,15 @@ namespace EncryptedLegder.Models
         public string Tag2 { get; set; }
         public string Tag3 { get; set; }
         public string Signature { get; set; }
+        public override string ToString()
+        {
+            string s = "";
+            foreach (var prop in GetType().GetProperties())
+            {
+                s += $"{prop.Name}: {prop.GetValue(this)}, ";
+            }
+            s = s.Substring(0, s.Length - 1);
+            return s;
+        }
     }
 }

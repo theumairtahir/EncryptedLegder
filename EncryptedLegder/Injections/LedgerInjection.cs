@@ -25,6 +25,7 @@ namespace EncryptedLegder.Injections
             builder.Register(x => new SaltValue(salt)).As<ISaltValue>();
             builder.Register(x => new EncryptionKey(encryptionKey)).As<IEncryptionKey>();
             builder.RegisterType<EncryptionDecryption>().As<ICryptography>();
+            builder.RegisterType<DigitalSigning>().As<IDigitalSigning>();
             builder.RegisterType<LedgerTransaction<TransactioneeIdType>>().As<ILedgerTransaction<TransactioneeIdType>>();
             return builder.Build();
         }

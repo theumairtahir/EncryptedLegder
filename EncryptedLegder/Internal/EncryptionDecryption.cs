@@ -1,9 +1,11 @@
 ﻿using EncryptedLegder.Abstractions;
+using EncryptedLegder.Models;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Paddings;
 using Org.BouncyCastle.Crypto.Parameters;
 using System;
+using System.Linq;
 using System.Text;
 
 namespace EncryptedLegder.Internal
@@ -13,12 +15,14 @@ namespace EncryptedLegder.Internal
         private readonly string key;
         private readonly Encoding encoding;
         private readonly IBlockCipherPadding padding;
+        private readonly IDigitalSigning digitalSigning;
 
-        public EncryptionDecryption(IEncryptionKey encryptionKey)
+        public EncryptionDecryption(IEncryptionKey encryptionKey, IDigitalSigning digitalSigning)
         {
             key = encryptionKey.GetEncryptionKey();
             encoding = Encoding.ASCII;
             padding = new Pkcs7Padding();
+            this.digitalSigning = digitalSigning;
         }
         public string Encrypt(string plainValue)
         {
@@ -36,8 +40,58 @@ namespace EncryptedLegder.Internal
             bCEngine.SetPadding(padding);
             return bCEngine;
         }
+
+        public EncryptedLedgerEntry Encrypt<TrsanctioneeIdType>(LedgerEntry<TrsanctioneeIdType> ledgerEntry)
+        {
+            EncryptedLedgerEntry encrypted = new EncryptedLedgerEntry();
+            var type = typeof(LedgerEntry<TrsanctioneeIdType>);
+            foreach (var property in type.GetProperties())
+            {
+                if (property.Name != "PrimaryKey")
+                {
+                    var cipher = Encrypt(property.GetValue(ledgerEntry).ToString());
+                    var name = property.Name;
+                    typeof(EncryptedLedgerEntry).GetProperties()
+                                                .Where(x => x.Name == name)
+                                                .FirstOrDefault()
+                                                .SetValue(encrypted, cipher);
+                }
+                else
+                {
+                    encrypted.PrimaryKey = ledgerEntry.PrimaryKey.ToString();
+                }
+            }
+            encrypted.Signature = digitalSigning.GetSignature(ledgerEntry);
+            return encrypted;
+        }
+
+        public LedgerEntry<TrsanctioneeIdType> Decrypt<TrsanctioneeIdType>(EncryptedLedgerEntry ledgerEntry)
+        {
+            LedgerEntry<TrsanctioneeIdType> decrypt = new LedgerEntry<TrsanctioneeIdType>();
+            var type = typeof(EncryptedLedgerEntry);
+            foreach (var property in type.GetProperties())
+            {
+                if (property.Name != "PrimaryKey")
+                {
+                    var value = Decrypt(property.GetValue(ledgerEntry).ToString());
+                    var name = property.Name;
+                    foreach (var item in typeof(TrsanctioneeIdType).GetProperties())
+                    {
+                        if (item.Name == name)
+                        {
+                            item.SetValue(decrypt, Convert.ChangeType(value, item.PropertyType));
+                        }
+                    }
+                }
+                else
+                {
+                    decrypt.PrimaryKey = Convert.ToInt64(ledgerEntry.PrimaryKey);
+                }
+            }
+            return decrypt;
+        }
     }
-    public class BCEngine
+    internal class BCEngine
     {
         private readonly Encoding _encoding;
         private readonly IBlockCipher _blockCipher;
