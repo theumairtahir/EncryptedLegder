@@ -65,17 +65,22 @@ namespace EncryptedLegder.Internal
             return encrypted;
         }
 
-        public LedgerEntry<TrsanctioneeIdType> Decrypt<TrsanctioneeIdType>(EncryptedLedgerEntry ledgerEntry)
+        public LedgerEntry<TrsanctioneeIdType> Decrypt<TrsanctioneeIdType>(EncryptedLedgerEntry ledgerEntry, out bool verificationFlag)
         {
             LedgerEntry<TrsanctioneeIdType> decrypt = new LedgerEntry<TrsanctioneeIdType>();
             var type = typeof(EncryptedLedgerEntry);
+            string signature = "";
             foreach (var property in type.GetProperties())
             {
-                if (property.Name != "PrimaryKey")
+                if (property.Name == "Signature")
+                {
+                    signature = property.GetValue(ledgerEntry).ToString();
+                }
+                else if (property.Name != "PrimaryKey")
                 {
                     var value = Decrypt(property.GetValue(ledgerEntry).ToString());
                     var name = property.Name;
-                    foreach (var item in typeof(TrsanctioneeIdType).GetProperties())
+                    foreach (var item in typeof(LedgerEntry<TrsanctioneeIdType>).GetProperties())
                     {
                         if (item.Name == name)
                         {
@@ -88,6 +93,7 @@ namespace EncryptedLegder.Internal
                     decrypt.PrimaryKey = Convert.ToInt64(ledgerEntry.PrimaryKey);
                 }
             }
+            verificationFlag = digitalSigning.VerifySignature(decrypt, signature);
             return decrypt;
         }
     }

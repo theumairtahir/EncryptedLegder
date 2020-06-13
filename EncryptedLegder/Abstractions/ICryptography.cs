@@ -2,11 +2,11 @@
 
 namespace EncryptedLegder.Abstractions
 {
-    internal interface ICryptography
+    public interface ICryptography
     {
         string Encrypt(string plainValue);
         string Decrypt(string cipherValue);
         EncryptedLedgerEntry Encrypt<TrsanctioneeIdType>(LedgerEntry<TrsanctioneeIdType> ledgerEntry);
-        LedgerEntry<TrsanctioneeIdType> Decrypt<TrsanctioneeIdType>(EncryptedLedgerEntry ledgerEntry);
+        LedgerEntry<TrsanctioneeIdType> Decrypt<TrsanctioneeIdType>(EncryptedLedgerEntry ledgerEntry, out bool verificationFlag);
     }
 }

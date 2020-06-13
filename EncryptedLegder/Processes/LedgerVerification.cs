@@ -3,7 +3,7 @@ using EncryptedLegder.Models;
 
 namespace EncryptedLegder.Processes
 {
-    internal class LedgerVerification<TransactioneeId> :ILedgerVerification<TransactioneeId>
+    internal class LedgerVerification<TransactioneeId> : ILedgerVerification<TransactioneeId>
     {
         private readonly IDigitalSigning digitalSigning;
         private readonly ICryptography cryptography;
@@ -15,8 +15,7 @@ namespace EncryptedLegder.Processes
         }
         public bool VerifyEntry(EncryptedLedgerEntry encryptedLedgerEntry)
         {
-            var decrypted = cryptography.Decrypt<TransactioneeId>(encryptedLedgerEntry);
-            var result = digitalSigning.VerifySignature(decrypted, encryptedLedgerEntry.Signature);
+            cryptography.Decrypt<TransactioneeId>(encryptedLedgerEntry, out bool result);
             return result;
         }
     }

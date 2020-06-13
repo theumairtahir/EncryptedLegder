@@ -14,7 +14,7 @@ namespace EncryptedLegder.Processes
         private string description, comments;
         private PersonWithBalance<TransactioneeIdType> person1, person2;
         private DateTime transactionDate;
-        private List<string> tags;
+        private readonly List<string> tags;
         public LedgerTransaction(ICryptography cryptography)
         {
             tags = new List<string>(3);
@@ -56,7 +56,7 @@ namespace EncryptedLegder.Processes
                 TransactioneeId = person2.PersonId,
                 Debit = transactionAmount,
                 Credit = 0,
-                Balance = person1.PreviousBalance + transactionAmount
+                Balance = person2.PreviousBalance + transactionAmount
             };
             encrypteds.Add(cryptography.Encrypt(person1Entry));
             encrypteds.Add(cryptography.Encrypt(person2Entery));
