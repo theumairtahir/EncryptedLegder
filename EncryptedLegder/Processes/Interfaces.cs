@@ -23,12 +23,13 @@ namespace EncryptedLegder.Processes
     public interface ILedgerCrud<PersonIdType>
     {
         long CreateEntry(EncryptedLedgerEntry<PersonIdType> ledgerEntry);
-        EncryptedLedgerEntry<PersonIdType> ReadEntry();
+        EncryptedLedgerEntry<PersonIdType> ReadEntry(out bool isVerified);
         bool DeleteEntry(long primaryKey);
+        List<LedgerEntry<PersonIdType>> ExecuteQuery(ILedgerQuery query, out bool isVerified);
     }
     public interface IAccountInfo<PersonIdType>
     {
-        IPersonBalance TheBalanceOf(ITransactionee<PersonIdType> transactionee);
+        IPersonBalance<PersonIdType> TheBalanceOf(ITransactionee<PersonIdType> transactionee);
         ILedgerInfo<PersonIdType> EntriesOf(ITransactionee<PersonIdType> transactionee);
     }
 

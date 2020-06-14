@@ -39,9 +39,20 @@ namespace EncryptedLegder.Injections
             builder.RegisterType<LedgerVerification<TransactioneeIdType>>()
                    .As<ILedgerVerification<TransactioneeIdType>>();
         }
-        public void RegisterLedgerCRUD<ConcreteClass>()
+        public void RegisterLedgerCRUD<ConcreteClass>(string listingCommand, string balanceCommand)
         {
-            builder.RegisterType<ConcreteClass>().As<ILedgerCrud<TransactioneeIdType>>();
+            builder.RegisterType<ConcreteClass>()
+                   .As<ILedgerCrud<TransactioneeIdType>>();
+            builder.Register(x => new EntriesBetweenQuery<TransactioneeIdType>(listingCommand))
+                   .As<IEnteriesBetweenQuery<TransactioneeIdType>>();
+            builder.Register(x => new PersonBalanceQuery<TransactioneeIdType>(balanceCommand))
+                   .As<IPersonBalanceQuery<TransactioneeIdType>>();
+            builder.RegisterType<LedgerInfoBuilder<TransactioneeIdType>>()
+                   .As<ILedgerInfo<TransactioneeIdType>>();
+            builder.RegisterType<PersonBalance<TransactioneeIdType>>()
+                   .As<IPersonBalance<TransactioneeIdType>>();
+            builder.RegisterType<AccountInfo<TransactioneeIdType>>()
+                   .As<IAccountInfo<TransactioneeIdType>>();
         }
     }
 }

@@ -2,10 +2,11 @@
 
 namespace EncryptedLegder.Abstractions
 {
-    public interface IPersonBalance
+    public interface IPersonBalance<TransactioneeIdType>
     {
+        IPersonBalance<TransactioneeIdType> Person(TransactioneeIdType transactionee);
         decimal Is();
-        IPersonBalance From(DateTime date);
-        IPersonBalance To(DateTime date);
+        IPersonBalance<TransactioneeIdType> From(DateTime date);
+        IPersonBalance<TransactioneeIdType> To(DateTime date);
     }
 }
