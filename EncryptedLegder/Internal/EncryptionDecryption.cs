@@ -41,9 +41,9 @@ namespace EncryptedLegder.Internal
             return bCEngine;
         }
 
-        public EncryptedLedgerEntry Encrypt<TrsanctioneeIdType>(LedgerEntry<TrsanctioneeIdType> ledgerEntry)
+        public EncryptedLedgerEntry<TrsanctioneeIdType> Encrypt<TrsanctioneeIdType>(LedgerEntry<TrsanctioneeIdType> ledgerEntry)
         {
-            EncryptedLedgerEntry encrypted = new EncryptedLedgerEntry();
+            EncryptedLedgerEntry<TrsanctioneeIdType> encrypted = new EncryptedLedgerEntry<TrsanctioneeIdType>();
             var type = typeof(LedgerEntry<TrsanctioneeIdType>);
             foreach (var property in type.GetProperties())
             {
@@ -51,7 +51,7 @@ namespace EncryptedLegder.Internal
                 {
                     var cipher = Encrypt(property.GetValue(ledgerEntry).ToString());
                     var name = property.Name;
-                    typeof(EncryptedLedgerEntry).GetProperties()
+                    typeof(EncryptedLedgerEntry<TrsanctioneeIdType>).GetProperties()
                                                 .Where(x => x.Name == name)
                                                 .FirstOrDefault()
                                                 .SetValue(encrypted, cipher);
@@ -65,12 +65,12 @@ namespace EncryptedLegder.Internal
             return encrypted;
         }
 
-        public LedgerEntry<TrsanctioneeIdType> Decrypt<TrsanctioneeIdType>(EncryptedLedgerEntry ledgerEntry, out bool verificationFlag)
+        public LedgerEntry<TrsanctioneeIdType> Decrypt<TrsanctioneeIdType>(EncryptedLedgerEntry<TrsanctioneeIdType> ledgerEntry, out bool verificationFlag)
         {
             LedgerEntry<TrsanctioneeIdType> decrypt = new LedgerEntry<TrsanctioneeIdType>();
-            var type = typeof(EncryptedLedgerEntry);
+            var type = typeof(EncryptedLedgerEntry<TrsanctioneeIdType>);
             string signature = "";
-            foreach (var property in type.GetProperties())
+            foreach (var property in type.GetProperties().Where(x => x.Name != "TransactioneeId"))
             {
                 if (property.Name == "Signature")
                 {

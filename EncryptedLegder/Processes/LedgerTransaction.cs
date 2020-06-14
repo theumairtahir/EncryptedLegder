@@ -12,7 +12,7 @@ namespace EncryptedLegder.Processes
         private readonly ICryptography cryptography;
         private decimal transactionAmount;
         private string description, comments;
-        private PersonWithBalance<TransactioneeIdType> person1, person2;
+        private ITransactionee<TransactioneeIdType> person1, person2;
         private DateTime transactionDate;
         private readonly List<string> tags;
         public LedgerTransaction(ICryptography cryptography)
@@ -29,9 +29,9 @@ namespace EncryptedLegder.Processes
             return this;
         }
 
-        public List<EncryptedLedgerEntry> Done()
+        public List<EncryptedLedgerEntry<TransactioneeIdType>> Done()
         {
-            List<EncryptedLedgerEntry> encrypteds = new List<EncryptedLedgerEntry>(2);
+            List<EncryptedLedgerEntry<TransactioneeIdType>> encrypteds = new List<EncryptedLedgerEntry<TransactioneeIdType>>(2);
             person1Entry = new LedgerEntry<TransactioneeIdType>
             {
                 Comments = comments,
@@ -40,7 +40,7 @@ namespace EncryptedLegder.Processes
                 Tag2 = tags[1],
                 Tag3 = tags[2],
                 TransactionDateTime = transactionDate,
-                TransactioneeId = person1.PersonId,
+                TransactioneeId = person1.PrimaryKey,
                 Debit = 0,
                 Credit = transactionAmount,
                 Balance = person1.PreviousBalance - transactionAmount
@@ -53,7 +53,7 @@ namespace EncryptedLegder.Processes
                 Tag2 = tags[1],
                 Tag3 = tags[2],
                 TransactionDateTime = transactionDate,
-                TransactioneeId = person2.PersonId,
+                TransactioneeId = person2.PrimaryKey,
                 Debit = transactionAmount,
                 Credit = 0,
                 Balance = person2.PreviousBalance + transactionAmount
@@ -75,13 +75,9 @@ namespace EncryptedLegder.Processes
             return this;
         }
 
-        public ILedgerTransaction<TransactioneeIdType> From(TransactioneeIdType person, decimal balance)
+        public ILedgerTransaction<TransactioneeIdType> From(ITransactionee<TransactioneeIdType> transactionee)
         {
-            person1 = new PersonWithBalance<TransactioneeIdType>
-            {
-                PersonId = person,
-                PreviousBalance = balance
-            };
+            person1 = transactionee;
             return this;
         }
 
@@ -91,13 +87,9 @@ namespace EncryptedLegder.Processes
             return this;
         }
 
-        public ILedgerTransaction<TransactioneeIdType> To(TransactioneeIdType person, decimal balance)
+        public ILedgerTransaction<TransactioneeIdType> To(ITransactionee<TransactioneeIdType> transactionee)
         {
-            person2 = new PersonWithBalance<TransactioneeIdType>
-            {
-                PersonId = person,
-                PreviousBalance = balance
-            };
+            person2 = transactionee;
             return this;
         }
 

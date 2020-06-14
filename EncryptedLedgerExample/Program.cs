@@ -11,36 +11,36 @@ namespace EncryptedLedgerExample
     {
         static void Main(string[] args)
         {
-            var container = new LedgerInjection<int>("786", "1234567890123456").Inject();
-            using var scope = container.BeginLifetimeScope();
-            var transaction = scope.Resolve<ILedgerTransaction<int>>();
-            var crypto = scope.Resolve<ICryptography>();
-            var enc = transaction.DoATransactionOf(1000)
-                        .From(1, 10000)
-                        .To(2, 2000)
-                        .On(DateTime.Now)
-                        .DueTo("Other reason")
-                        .With("abc")
-                        .And("xyz")
-                        .And("xyz2")
-                        .And("xyz3")
-                        .Done();
-            foreach (var item in enc)
-            {
-                foreach (var line in item.ToString().Split(","))
-                {
-                    Console.WriteLine(line);
-                }
-            }
-            foreach (var item in enc)
-            {
-                var dec = crypto.Decrypt<int>(item, out bool flag);
-                foreach (var line in dec.ToString().Split(","))
-                {
-                    Console.WriteLine(line);
-                }
-                Console.WriteLine($"verified: {flag}");
-            }
+            //var container = new LedgerInjection<int>("786", "1234567890123456").Inject();
+            //using var scope = container.BeginLifetimeScope();
+            //var transaction = scope.Resolve<ILedgerTransaction<int>>();
+            //var crypto = scope.Resolve<ICryptography>();
+            //var enc = transaction.DoATransactionOf(1000)
+            //            .From(1, 10000)
+            //            .To(2, 2000)
+            //            .On(DateTime.Now)
+            //            .DueTo("Other reason")
+            //            .With("abc")
+            //            .And("xyz")
+            //            .And("xyz2")
+            //            .And("xyz3")
+            //            .Done();
+            //foreach (var item in enc)
+            //{
+            //    foreach (var line in item.ToString().Split(","))
+            //    {
+            //        Console.WriteLine(line);
+            //    }
+            //}
+            //foreach (var item in enc)
+            //{
+            //    var dec = crypto.Decrypt<int>(item, out bool flag);
+            //    foreach (var line in dec.ToString().Split(","))
+            //    {
+            //        Console.WriteLine(line);
+            //    }
+            //    Console.WriteLine($"verified: {flag}");
+            //}
             Console.ReadLine();
         }
     }

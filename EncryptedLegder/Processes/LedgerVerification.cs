@@ -13,7 +13,7 @@ namespace EncryptedLegder.Processes
             this.digitalSigning = digitalSigning;
             this.cryptography = cryptography;
         }
-        public bool VerifyEntry(EncryptedLedgerEntry encryptedLedgerEntry)
+        public bool VerifyEntry(EncryptedLedgerEntry<TransactioneeId> encryptedLedgerEntry)
         {
             cryptography.Decrypt<TransactioneeId>(encryptedLedgerEntry, out bool result);
             return result;

@@ -6,7 +6,7 @@ namespace EncryptedLegder.Abstractions
     {
         string Encrypt(string plainValue);
         string Decrypt(string cipherValue);
-        EncryptedLedgerEntry Encrypt<TrsanctioneeIdType>(LedgerEntry<TrsanctioneeIdType> ledgerEntry);
-        LedgerEntry<TrsanctioneeIdType> Decrypt<TrsanctioneeIdType>(EncryptedLedgerEntry ledgerEntry, out bool verificationFlag);
+        EncryptedLedgerEntry<TrsanctioneeIdType> Encrypt<TrsanctioneeIdType>(LedgerEntry<TrsanctioneeIdType> ledgerEntry);
+        LedgerEntry<TrsanctioneeIdType> Decrypt<TrsanctioneeIdType>(EncryptedLedgerEntry<TrsanctioneeIdType> ledgerEntry, out bool verificationFlag);
     }
 }

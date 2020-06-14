@@ -26,10 +26,10 @@ namespace EncryptedLegder.Models
             return s;
         }
     }
-    public class EncryptedLedgerEntry
+    public class EncryptedLedgerEntry<TransactioneeIdType>
     {
         public string PrimaryKey { get; set; }
-        public string TransactioneeId { get; set; }
+        public TransactioneeIdType TransactioneeId { get; set; }
         public string Debit { get; set; }
         public string Credit { get; set; }
         public string Balance { get; set; }
