@@ -28,7 +28,7 @@ namespace EncryptedLegder.Models
     }
     public class EncryptedLedgerEntry<TransactioneeIdType>
     {
-        public string PrimaryKey { get; set; }
+        public long PrimaryKey { get; set; }
         public TransactioneeIdType TransactioneeId { get; set; }
         public string Debit { get; set; }
         public string Credit { get; set; }
