@@ -45,7 +45,7 @@ namespace EncryptedLegder.Internal
         {
             EncryptedLedgerEntry<TrsanctioneeIdType> encrypted = new EncryptedLedgerEntry<TrsanctioneeIdType>();
             var type = typeof(LedgerEntry<TrsanctioneeIdType>);
-            foreach (var property in type.GetProperties().Where(x => x.Name != "TransactioneeId"))
+            foreach (var property in type.GetProperties().Where(x => x.Name != "TransactioneeId" && x.Name != "TransactionDateTime"))
             {
                 if (property.Name != "PrimaryKey")
                 {
@@ -61,6 +61,7 @@ namespace EncryptedLegder.Internal
                     encrypted.PrimaryKey = ledgerEntry.PrimaryKey;
                 }
             }
+            encrypted.TransactionDateTime = ledgerEntry.TransactionDateTime;
             encrypted.TransactioneeId = ledgerEntry.TransactioneeId;
             encrypted.Signature = digitalSigning.GetSignature(ledgerEntry);
             return encrypted;
@@ -71,7 +72,7 @@ namespace EncryptedLegder.Internal
             LedgerEntry<TrsanctioneeIdType> decrypt = new LedgerEntry<TrsanctioneeIdType>();
             var type = typeof(EncryptedLedgerEntry<TrsanctioneeIdType>);
             string signature = "";
-            foreach (var property in type.GetProperties().Where(x => x.Name != "TransactioneeId"))
+            foreach (var property in type.GetProperties().Where(x => x.Name != "TransactioneeId" && x.Name != "TransactionDateTime"))
             {
                 if (property.Name == "Signature")
                 {
@@ -95,6 +96,7 @@ namespace EncryptedLegder.Internal
                     decrypt.PrimaryKey = Convert.ToInt64(ledgerEntry.PrimaryKey);
                 }
             }
+            decrypt.TransactionDateTime = ledgerEntry.TransactionDateTime;
             decrypt.TransactioneeId = ledgerEntry.TransactioneeId;
             verificationFlag = digitalSigning.VerifySignature(decrypt, signature);
             return decrypt;

@@ -10,7 +10,7 @@ namespace EncryptedLegder.Internal
     {
         private readonly ILedgerCrud<TransactioneeIdType> ledger;
         private readonly IEnteriesBetweenQuery<TransactioneeIdType> query;
-        private DateTime startDate = DateTime.MinValue;
+        private DateTime startDate = Common.MIN_DATE;
         private DateTime endDate = DateTime.MaxValue;
 
         public LedgerInfoBuilder(ILedgerCrud<TransactioneeIdType> ledger, IEnteriesBetweenQuery<TransactioneeIdType> query)

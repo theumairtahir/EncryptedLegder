@@ -76,7 +76,8 @@ namespace EncryptedLedgerExample
 
                 entity.Property(e => e.TransactionDateTime)
                     .IsRequired()
-                    .IsUnicode(false);
+                    .HasColumnType("datetime");
+                    
                 entity.Property(e => e.Signature)
                     .IsRequired()
                     .IsUnicode(false);

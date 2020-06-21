@@ -33,7 +33,7 @@ namespace EncryptedLegder.Models
         public string Debit { get; set; }
         public string Credit { get; set; }
         public string Balance { get; set; }
-        public string TransactionDateTime { get; set; }
+        public DateTime TransactionDateTime { get; set; }
         public string Description { get; set; }
         public string Comments { get; set; }
         public string Tag1 { get; set; }

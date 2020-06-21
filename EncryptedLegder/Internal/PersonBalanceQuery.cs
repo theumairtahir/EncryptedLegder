@@ -7,7 +7,7 @@ namespace EncryptedLegder.Internal
     {
         private readonly string commandFormat;
         private TransactioneeIdType transactionee;
-        private DateTime startDate = DateTime.MinValue, endDate = DateTime.MaxValue;
+        private DateTime startDate = Common.MIN_DATE, endDate = DateTime.MaxValue;
         public PersonBalanceQuery(string commandFormat)
         {
             this.commandFormat = commandFormat;

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace EncryptedLedgerExample
 {
@@ -27,6 +28,7 @@ namespace EncryptedLedgerExample
             var transaction = scope.Resolve<ILedgerTransaction<int>>();
             var crypto = scope.Resolve<ICryptography>();
             var crud = scope.Resolve<ILedgerCrud<int>>();
+            var balance = scope.Resolve<IAccountInfo<int>>();
             //Transaction Code
             //var enc = transaction.DoATransactionOf(1000)
             //            .From(new Transactionee { PreviousBalance = 4000, PrimaryKey = 1 })
@@ -42,16 +44,19 @@ namespace EncryptedLedgerExample
             //{
             //    crud.CreateEntry(x);
             //});
-            var enc = crud.ReadEntry(2, out bool isVerified);
-            foreach (var line in enc.ToString().Split(","))
-            {
-                Console.WriteLine(line);
-            }
-            foreach (var line in enc.ToString().Split(","))
-            {
-                Console.WriteLine(line);
-            }
-            Console.WriteLine($"verified: {isVerified}");
+            //var enc = crud.ReadEntry(2, out bool isVerified);
+            //foreach (var line in enc.ToString().Split(","))
+            //{
+            //    Console.WriteLine(line);
+            //}
+            //foreach (var line in enc.ToString().Split(","))
+            //{
+            //    Console.WriteLine(line);
+            //}
+            //Console.WriteLine($"verified: {isVerified}");
+
+            //getting user Balance
+            Console.WriteLine(balance.TheBalanceOf(new Transactionee { PrimaryKey = 2 }).Is());
             Console.ReadLine();
         }
     }
@@ -203,8 +208,9 @@ namespace EncryptedLedgerExample
             RegisterLedgerCRUD<LedgerCRUD>(@"SELECT * FROM TABLE
                                                 WHERE TransactioneeId={0} 
                                                 AND TransactionDateTime BETWEEN '{1}' AND '{2}'",
-                                                @"SELECT MAX(Balance) FROM TABLE
+                                                @"SELECT * FROM [TABLE]
                                                     WHERE TransactioneeId={0}
+	                                                and [TABLE].Id = (SELECT MAX([TABLE].Id) FROM [TABLE] WHERE TransactioneeId={0})
                                                     AND TransactionDateTime BETWEEN '{1}' AND '{2}'");
             builder.RegisterType<LedgerCRUD>().As<ILedgerCrud<int>>();
         }

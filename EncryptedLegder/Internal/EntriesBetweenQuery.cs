@@ -6,7 +6,8 @@ namespace EncryptedLegder.Internal
     internal class EntriesBetweenQuery<TransactioneeIdType> : IEnteriesBetweenQuery<TransactioneeIdType>
     {
         private readonly string commandFormat;
-        private DateTime startDate = DateTime.MinValue, endDate = DateTime.MaxValue;
+        private DateTime startDate = Common.MIN_DATE, endDate = DateTime.MaxValue;
+
         private TransactioneeIdType transactionee;
         public EntriesBetweenQuery(string commandFormat)
         {
